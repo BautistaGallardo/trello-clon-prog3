@@ -1,0 +1,121 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Account {
+  id                 String    @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+
+  user               User      @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String    @id @default(cuid())
+  sessionToken String    @unique
+  userId       String
+  expires      DateTime
+
+  user         User      @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model User {
+  id            String            @id @default(cuid())
+  name          String?
+  email         String?           @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+  board         Board[]
+  comment       Comment[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String     @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Board {
+  id          String        @id @default(cuid())
+  title       String
+  content     String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  userId      String
+  user        User          @relation(fields: [userId], references: [id])
+  listCard    ListCard[]  
+  backgroudId String
+  backgroud   Backgroud     @relation(fields: [backgroudId], references: [id])
+}
+
+model Backgroud {
+  id          String    @id @default(cuid())
+  url         String
+  board       Board[]
+}
+
+model ListCard{
+  id          String        @id @default(cuid())
+  title       String
+  content     String
+  index       Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  boardId     String
+  board       Board         @relation(fields: [boardId], references: [id])
+  card        Card[]
+}
+
+model Card {
+  id          String        @id @default(cuid())
+  title       String
+  content     String?
+  index       Int           @default(0)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  listCardId  String
+  listCard    ListCard      @relation(fields: [listCardId], references: [id])
+  listComment ListComment[]
+}
+
+model ListComment{
+  id          String      @id @default(cuid())
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  cardId      String      @unique
+  card        Card        @relation(fields: [cardId], references: [id])
+  comment     Comment[]
+}
+
+model Comment{
+  id          String      @id @default(cuid())
+  content     String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  listCommentId String
+  listComment ListComment @relation(fields: [listCommentId], references: [id])
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+}
