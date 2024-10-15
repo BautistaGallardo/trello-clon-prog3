@@ -39,7 +39,7 @@ const AddCardList: React.FC<AddCardListProps> = ({id, onAddCard}) => {
             )}
             {isOpen &&(
             <form  className= ''>
-                <div className=" w-72">
+                <div className="w-full">
                     <div className=" m-3">
                         <textarea onChange={handleChanges} placeholder="card title" name="title" cols={20} className=" p-2 rounded-md bg-base-100"></textarea>
                     </div>

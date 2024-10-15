@@ -15,14 +15,15 @@ interface BoardIconProps {
 const BoardIcon:React.FC<BoardIconProps>=({id})=> {
     const [bg, setBg] = useState<string>();
     const [lists, setLists] = useState<any[]>([]);
+    
 
     useEffect( () => {
         const fetchList = async () => {
             try{
                 const response = await axios({
-                    method: "post",
+                    method: "get",
                     url: "/api/listCard/getListCardByBoardId",
-                    data: {
+                    params: {
                         id: id
                     }
                 });
@@ -33,6 +34,8 @@ const BoardIcon:React.FC<BoardIconProps>=({id})=> {
         }
         fetchList();
     },[])
+
+    
 
     function upadateCard(newLists:Array<any>){
         axios({
@@ -48,9 +51,9 @@ const BoardIcon:React.FC<BoardIconProps>=({id})=> {
         const background = async () => {
             try {
                 const response = await axios({
-                    method: "post",
+                    method: "get",
                     url: "/api/background/getBackgroundByBoardId",
-                    data: {
+                    params: {
                         id: id
                     }
                 });

@@ -26,11 +26,12 @@ export default function AddBoardModal() {
     // query to add board
     const addBoard = async (e: any) => {
         try {
-            const res = await axios.post("/api/board/addBoard", {
-                title: board.title,
-                content: 'fsaddssd',
-                userEmail: session?.user?.email,
-                background: selectedBackground
+            const res = await axios.post("/api/board/addBoard", 
+                {
+                    title: board.title,
+                    content: 'fsaddssd',
+                    userEmail: session?.user?.email,
+                    background: selectedBackground
                 });
         } catch (error: any) {
             console.log(error.response.data);
@@ -41,7 +42,7 @@ export default function AddBoardModal() {
     useEffect(() =>{
         const backgrounds = async () => {
             try {
-                const res = await axios.post("/api/background/getBackgrounds");
+                const res = await axios.get("/api/background/getBackgrounds");
                 setBackground(res.data);
     
             } catch (error: any) {

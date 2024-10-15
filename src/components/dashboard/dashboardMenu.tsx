@@ -32,13 +32,23 @@ const BoardsList: React.FC<BoardsListProps> = ({ boards,setBoards }) => {
         setBoards(newBoards);
     }
 
+    function updateLastVisited(id: string){
+        axios({
+            method: "put",
+            url: "/api/board/updateLastVisited",
+            data: {
+                id: id
+            }
+        });
+    }
+
     return (
         <div className=" flex">
             <ul className=" w-full menu">
                 {boards.map((board) => (
                     <li key={board.id} className="p-1 flex justify-between">
                         <div className=" w-full flex justify-between">
-                            <a className="w-full overflow-hidden" href={`/pages/board/${board.id}`}><div className=" w-full overflow-hidden">{board.title}</div></a>
+                            <a className="w-full overflow-hidden" href={`/pages/board/${board.id}`} onClick={() => updateLastVisited(board.id)}><div className=" w-full overflow-hidden">{board.title}</div></a>
                             <div className="dropdown dropdown-bottom">
                                 <div tabIndex={0} role="button" className=""><h3 className=" flex justify-center">...</h3></div>
                                 <ul  tabIndex={0} className="dropdown-content menu bg-base-100  z-[1] w-52 p-2 shadow">

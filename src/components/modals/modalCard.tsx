@@ -24,12 +24,15 @@ const ModalCard: React.FC<ModalCardProps> = ({ title, description, cardId, setCa
     const [comments, setComments] = useState<Comment[]>([]);
     const formRef = useRef<HTMLFormElement>(null);
     const [isOpenDescription, setIsOpenDescription] = useState<boolean>(false);
-    const [descriptionCard, setDescriptionCard] = useState<string>("");
+    const [descriptionCard, setDescriptionCard] = useState<string>();
 
     useEffect(() => {
         const fetchComments = async () => {
             try {
-                const res = await axios.post("/api/comments/getCommentsCard", { cardId });
+                const res = await axios.get("/api/comments/getCommentsCard", 
+                    { 
+                        params: { id: cardId }
+                    });
                 setComments(res.data);
             } catch (error: any) {
                 console.error(error);
@@ -81,8 +84,8 @@ const ModalCard: React.FC<ModalCardProps> = ({ title, description, cardId, setCa
         setDescriptionCard(e.target.value);
     }
 
-    const addDescription = (cardId:string) => {
-        axios({
+    const addDescription= async (cardId:string) => {
+        const res = axios({
             method: "put",
             url: "/api/card/addDescription",
             data: {
@@ -90,7 +93,24 @@ const ModalCard: React.FC<ModalCardProps> = ({ title, description, cardId, setCa
                 description: descriptionCard
             }
         });
-        setDescriptionCard(description);
+        const newDescription = {
+            lists: lists.map((list) => {
+                return {
+                    ...list,
+                    card: list.card.map((card: any) => {
+                        if (card.id === cardId) {
+                            return {
+                                ...card,
+                                content: descriptionCard
+                            };
+                        }
+                        return card;
+                    })
+                };
+            })
+        };
+        setCards(newDescription.lists);
+        setIsOpenDescription(!isOpenDescription);
     }
 
 
@@ -110,7 +130,7 @@ const ModalCard: React.FC<ModalCardProps> = ({ title, description, cardId, setCa
                                 </svg>
                             </div>
                         </div>
-                        <div className={!isOpenDescription ? "mb-12" : "mb-5"}>
+                        <div className={!isOpenDescription ? " mb-20" : "mb-5"}>
                             <h2 className="text-lg">Description</h2>
                             <div className="flex justify-between relative">
                                 <div className="break-words w-11/12">
@@ -125,17 +145,18 @@ const ModalCard: React.FC<ModalCardProps> = ({ title, description, cardId, setCa
                                                 placeholder="Description input"
                                                 onChange={handleChanges}
                                             ></textarea>
-                                            <div onClick={() => addDescription(cardId)} className=" w-full flex justify-end mt-1"><button onClick={()=>setIsOpenDescription(!isOpenDescription)} className=" p-2 hover:ring-1 hover:ring-slate-300 rounded-lg">Guardar</button></div>
+                                            <div className=" w-full flex justify-end mt-1"><button onClick={() => addDescription(cardId)} className=" p-2 hover:ring-1 hover:ring-slate-300 rounded-lg">Guardar</button></div>
                                         </div>
                                         
                                     ) : (
-                                        <div onClick={() => setIsOpenDescription(!isOpenDescription)} className={!isOpenDescription ? "h-ful min-h-5 w-full absolute z-10" : " hidden"}>
+                                        <div onClick={() => setIsOpenDescription(!isOpenDescription)} className={!isOpenDescription ? "h-full min-h-5 w-full absolute z-10" : " hidden"}>
                                             <textarea
                                                 id="description"
                                                 name="description"
                                                 className="mt-1 textarea block w-full px-3 py-2 bg-base-100 rounded-md shadow-sm"
                                                 defaultValue={description}
                                                 placeholder="Description input"
+                                                readOnly
                                             ></textarea>
                                         </div>
                                     )}

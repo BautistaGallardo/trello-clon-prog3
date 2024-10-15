@@ -9,10 +9,24 @@ import AddBoardModal from "../modals/addBoardModal";
 
 interface BoardsListProps {
     boards: Array<any>
+    lastBoards: Array<any>
 }
 
-const boardContent:React.FC<BoardsListProps> = ({boards}) =>{    
+const boardContent:React.FC<BoardsListProps> = ({boards, lastBoards}) =>{    
     const [isOpen, setIsOpen] = useState<boolean>(false); 
+
+    // actualizar el campo lastVisited de la tabla board
+    function updateLastVisited(id: string){
+        axios({
+            method: "put",
+            url: "/api/board/updateLastVisited",
+            data: {
+                id: id
+            }
+        });
+    }
+
+
     return (
 
         <div className="col-span-3 md:col-span-2 flex flex-col h-full">
@@ -22,9 +36,9 @@ const boardContent:React.FC<BoardsListProps> = ({boards}) =>{
                             <h2 className=" text-xl">Visto Recientmente</h2>
                         </div>
                         <div className="grid xl:grid-cols-4 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-2 justify-center ">
-                            {boards.map((board: any) => {
+                            {lastBoards.map((board: any) => {
                                 return (
-                                    <Link className="" href={`/pages/board/${board.id}`} prefetch><BoardIcon title={board.title} id={board.id} Url={board.backgroud.url}/></Link>
+                                    <Link className="" href={`/pages/board/${board.id}`} onClick={() => updateLastVisited(board.id)} prefetch><BoardIcon title={board.title} id={board.id} Url={board.backgroud.url}/></Link>
                                 );
                             })}
                         </div>
@@ -36,7 +50,7 @@ const boardContent:React.FC<BoardsListProps> = ({boards}) =>{
                         <div className="grid xl:grid-cols-4 lg:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-2 justify-center">
                             {boards.map((board: any) => {
                                 return (
-                                    <Link className="" href={`/pages/board/${board.id}`} prefetch><BoardIcon title={board.title} id={board.id} Url={board.backgroud.url}/></Link>
+                                    <Link className="" href={`/pages/board/${board.id}`} onClick={() => updateLastVisited(board.id)} prefetch><BoardIcon title={board.title} id={board.id} Url={board.backgroud.url}/></Link>
                                 );
                             })}
 

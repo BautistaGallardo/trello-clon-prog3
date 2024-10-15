@@ -1,13 +1,16 @@
 import { NextRequest,NextResponse } from "next/server";
 import prisma from "@/libs/connect_db"; 
 
-export async function POST(req: NextRequest){
+export async function GET(req: NextRequest){
     try {
-        const data = await req.json()
+        const qparam = req.nextUrl.searchParams.get("id");
 
+        if (!qparam) {
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        }
         const board = await prisma.board.findUnique(
             {
-                where: {id: data.id}
+                where: {id: qparam}
             }
         );
         const background = await prisma.backgroud.findUnique(

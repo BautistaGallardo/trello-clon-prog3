@@ -3,16 +3,17 @@ import prisma from "@/libs/connect_db";
 
 
 // get all comments of a card
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
     try {
-        const data = await req.json();
-        if (!data.cardId) {
+        const qparams = req.nextUrl.searchParams.get("id");
+
+        if (!qparams) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
         }
         const comments = await prisma.comment.findMany({
             where: {
                 listComment: {
-                    cardId: data.cardId
+                    cardId: qparams
                 }
             }
         });

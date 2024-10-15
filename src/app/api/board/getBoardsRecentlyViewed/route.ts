@@ -1,4 +1,4 @@
-import { NextRequest,NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/libs/connect_db";
 
 export async function GET(req: NextRequest) {
@@ -11,15 +11,19 @@ export async function GET(req: NextRequest) {
         const user = await prisma.user.findUnique({
             where: { email: qparam }
         });
-        
-        
+
         if (!user) {
             return new NextResponse("User not found", { status: 404 });
         }
+
         const boards = await prisma.board.findMany({
             where: {
                 userId: user.id
             },
+            orderBy: {
+                lastVisited: 'desc' 
+            },
+            take: 6, 
             select: {
                 id: true,
                 title: true,
@@ -32,7 +36,6 @@ export async function GET(req: NextRequest) {
                 }
             }
         });
-
 
         return NextResponse.json(boards);
     } catch (error) {

@@ -1,12 +1,16 @@
 import prisma from "@/libs/connect_db";
-import { NextResponse, NextRequest } from "next/server";
+import { NextResponse, NextRequest,NextFetchEvent } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function GET(req: NextRequest) {
     try {
-    const data = await req.json();
+    const qparam = req.nextUrl.searchParams.get("id");
+
+    if (!qparam) {
+        return new NextResponse("Bad Request", { status: 400 });
+    }
     const list = await prisma.listCard.findMany({
         where: {
-            boardId: data.id
+            boardId: qparam
         },
         select: {
             id: true,

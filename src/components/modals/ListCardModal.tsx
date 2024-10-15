@@ -43,7 +43,17 @@ const ListCardModal: React.FC<listCardModal> = ({ title, id, setListCard, lists,
                 description: descriptionlist
             }
         });
-        setDescriptionList(description);
+        
+        setListCard(lists.map((list) => {
+            if(list.id === listId){
+                return {
+                    ...list,
+                    content: descriptionlist
+                }
+            }
+            return list;
+        }));
+        setIsOpenDescription(!isOpenDescription);
     }
     
     return (
@@ -61,7 +71,7 @@ const ListCardModal: React.FC<listCardModal> = ({ title, id, setListCard, lists,
                             </div>
                         </div>
                         <div className={!isOpenDescription ? "" : "mb-5"}>
-                            <h2 className="text-lg">Description</h2>
+                            <h2 className="text-lg">descripción</h2>
                             <div className="flex justify-between">
                                 <div className="break-words w-11/12">
                                     {isOpenDescription ? (
@@ -75,7 +85,7 @@ const ListCardModal: React.FC<listCardModal> = ({ title, id, setListCard, lists,
                                                 placeholder="Description input"
                                                 onChange={handleChanges}
                                             ></textarea>
-                                            <div onClick={() => addDescription(id)} className=" w-full flex justify-end mt-1"><button onClick={()=>setIsOpenDescription(!isOpenDescription)} className=" p-2 hover:ring-1 hover:ring-slate-300 rounded-lg">Guardar</button></div>
+                                            <div  className=" w-full flex justify-end mt-1"><button onClick={() => addDescription(id)} className=" p-2 hover:ring-1 hover:ring-slate-300 rounded-lg">Guardar</button></div>
                                         </div>
                                         
                                     ) : (
@@ -95,7 +105,7 @@ const ListCardModal: React.FC<listCardModal> = ({ title, id, setListCard, lists,
                         <div className=" flex justify-end">
                             <button className="justify-start flex" onClick={() => deleteListCard(id)}> 
                                 <span className=" btn ring-1 ring-error bg-base-200 p-2 rounded-md hover:text-error">
-                                    Borrar Lista
+                                    Borrar
                                 </span>
                             </button>
                         </div>

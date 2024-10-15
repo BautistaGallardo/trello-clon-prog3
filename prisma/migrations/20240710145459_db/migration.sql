@@ -49,6 +49,7 @@ CREATE TABLE "Board" (
     "updatedAt" DATETIME NOT NULL,
     "userId" TEXT NOT NULL,
     "backgroudId" TEXT NOT NULL,
+    "lastVisited" DATETIME DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "Board_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Board_backgroudId_fkey" FOREIGN KEY ("backgroudId") REFERENCES "Backgroud" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

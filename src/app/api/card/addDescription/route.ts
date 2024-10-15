@@ -5,7 +5,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
     const data = await req.json();
 
     try {
-        if (!data.id || !data.description) {
+        if (!data.id) {
             throw new Error("Missing required fields");
         }
 
@@ -23,6 +23,17 @@ export async function PUT(req: NextRequest, res: NextResponse) {
             return NextResponse.json({ message: "Card already has this description" }, { status: 200 });
         }
 
+        if (!data.description) {
+            const addDescription = await prisma.card.update({
+                where: {
+                    id: data.id
+                },
+                data: {
+                    content: ""
+                }
+            });
+        }
+
         const addDescription = await prisma.card.update({
             where: {
                 id: data.id
@@ -32,7 +43,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
             }
         });
 
-        return NextResponse.json({ message: "Card and its comments deleted" }, { status: 200 });
+        return NextResponse.json(addDescription.content, { status: 200 });
     } catch (error) {
         console.error("Error:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

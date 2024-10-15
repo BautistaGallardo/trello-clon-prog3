@@ -1,11 +1,12 @@
 import React from "react";
 import NavBar from "@/components/navBar/page";
+import Profile from "@/components/profile/page";
 
-export default function Profile() {
+export default function ProfilePage() {
     return (
         <div className="bg-base-200 min-h-screen">
             <NavBar />
-            <h1>Profile</h1>
+            <Profile />
         </div>
     );
 }

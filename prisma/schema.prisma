@@ -68,6 +68,7 @@ model Board {
   listCard    ListCard[]  
   backgroudId String
   backgroud   Backgroud     @relation(fields: [backgroudId], references: [id])
+  lastVisited DateTime?     @default(now())
 }
 
 model Backgroud {
